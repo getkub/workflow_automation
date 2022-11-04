@@ -3,8 +3,3 @@ modules_order:
   - workflow_modules/processing/process_email
   - use_cases/01_threat_email/add_tags
   - workflow_modules/escalation/escalate_manager
-
-modules_vars:
-  - integrations/vault/outlook.yml
-  - use_cases/01_threat_email/vars.yml
-
