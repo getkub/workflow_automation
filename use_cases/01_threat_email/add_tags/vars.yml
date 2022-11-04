@@ -1,0 +1,3 @@
+name: "01_threat_email"
+filepath_input_location: "/tmp/sample_spreadsheet.xlsx"
+dataPropertyName_name: "sample_spreadsheet"
