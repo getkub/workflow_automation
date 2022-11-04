@@ -1,0 +1,13 @@
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field\n// called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "id": "fd969c0f-4aeb-4d2d-9d64-d093d6ef6459",
+      "name": "Manager_Escalation",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        840,
+        240
+      ]
+    }

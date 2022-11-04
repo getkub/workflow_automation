@@ -1,0 +1,14 @@
+    {
+      "parameters": {
+        "binaryPropertyName": "{{dataPropertyName_name}}",
+        "options": {}
+      },
+      "id": "9eca5c96-6b9f-42d6-a51a-79477f29da10",
+      "name": "Process_email",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 1,
+      "position": [
+        620,
+        240
+      ]
+    }
