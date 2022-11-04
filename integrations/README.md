@@ -1,10 +1,6 @@
-## workflow_automation
-Creating Workflow automation using n8n and Entirely based on dynamic templates
-
+## Integrations
+Integrations structure is to hold artefacts to various integrations
 
 | Item         | Description     |
 |--------------|-----------|
-| ansible_playbooks     | Build & Deployment Playbooks      |
-| integrations          | Various integrations and vault      |
-| use_cases             | Detailed UseCases  |
-| workflow_modules      | Abstracted workflow modules  |
+| vault     |  contains userid & creds for various integrations. This directory could be existing outside external vaults too      |
