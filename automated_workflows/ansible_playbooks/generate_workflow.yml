@@ -1,8 +1,11 @@
 - name: Generate Workflow
   hosts: localhost
   vars:
+    wf: "wf00"  # Set the value of wf variable
+    env: "dev"  # Set the value of env variable
     wf_dir: "../workflows"
     swf_dir: "../subworkflows"
+    dest_dir: "/tmp/{{ wf }}"
   tasks:
     - name: Load order and common files
       include_vars:
@@ -13,9 +16,10 @@
         - "{{ wf_dir }}/{{ wf }}/env.{{ env }}.yml"
       register: loaded_files
 
-    - name: Debug loaded files
-      debug:
-        var: loaded_files
+    - name: Clean up destination directory
+      ansible.builtin.file:
+        path: "{{ dest_dir }}"
+        state: absent
 
     - name: Combine configuration
       set_fact:
@@ -47,37 +51,80 @@
         nodes: "{{ nodes | default([]) + [{
           'parameters': {
             'source': 'localFile',
-            'workflowPath': '/tmp/01_basic_subworkflow/' + item + '.json',
+            'workflowPath': dest_dir + '/' + item + '/main.json',
             'options': {}
           },
           'name': 'Execute ' + item + ' Workflow',
           'type': 'n8n-nodes-base.executeWorkflow',
           'typeVersion': 1,
-          'position': [460 + (index * 200), 340],
+          'position': [660 + (index * 200), 340],
           'id': node_uuids[index]
         }] }}"
       loop: "{{ combined_config_flat.modules_order }}"
       loop_control:
         index_var: index
 
+    - name: Add webhook node to start the workflow
+      set_fact:
+        nodes: "{{ [{
+          'parameters': {
+            'httpMethod': 'POST',
+            'path': 'webhook',
+            'responseMode': 'onReceived',
+            'responseData': 'allEntries',
+            'options': {}
+          },
+          'name': 'Webhook',
+          'type': 'n8n-nodes-base.webhook',
+          'typeVersion': 1,
+          'position': [460, 240],
+          'id': webhook_uuid
+        }] + nodes }}"
+      vars:
+        webhook_uuid: "{{ lookup('pipe', 'python3 -c \"import uuid; print(uuid.uuid4())\"') }}"
+
+    - name: Create connections between nodes
+      set_fact:
+        connections: >-
+          {{
+            connections | default({}) | combine({
+              (nodes[index-1]['id']): {
+                'main': [[{
+                  'node': nodes[index]['id'],
+                  'type': 'main',
+                  'index': 0
+                }]]
+              }
+            })
+          }}
+      loop: "{{ range(1, nodes | length) }}"
+      loop_control:
+        index_var: index
+
     - name: Set up variables for main workflow template
       set_fact:
         meta: "{{ {'meta': combined_config_flat.get('meta', {})} }}"
-        connections: "{{ {'connections': combined_config_flat.get('connections', {})} }}"
       when: combined_config_flat is defined
 
     - name: Create destination directory
       file:
-        path: "/tmp/{{ wf }}"
+        path: "{{ dest_dir }}"
         state: directory
         mode: '0755'
+
+    - name: Copy subworkflows directory
+      ansible.builtin.copy:
+        src: "{{ swf_dir }}"
+        dest: "{{ dest_dir }}/subworkflows"
+        remote_src: yes
+        force: yes
 
     - name: Generate main workflow template
       template:
         src: templates/workflow_template.j2
-        dest: "/tmp/{{ wf }}/main_workflow_{{ wf }}.json"
+        dest: "{{ dest_dir }}/main_workflow_{{ wf }}.json"
       vars:
         meta: "{{ meta }}"
         nodes: "{{ nodes }}"
-        connections: "{{ connections }}"
+        connections: "{{ {'connections': connections} }}"
       when: combined_config_flat is defined

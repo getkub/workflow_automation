@@ -1,33 +1,6 @@
     {
   "meta": {{ meta | to_json }},
-  "nodes": [
-    {% for node in nodes %}
-    {
-      "parameters": {{ node.parameters | to_json }},
-      "name": "{{ node.name }}",
-      "type": "{{ node.type }}",
-      "typeVersion": {{ node.typeVersion }},
-      "position": {{ node.position | to_json }},
-      "id": "{{ node.id }}"
-    }{% if not loop.last %},{% endif %}
-    {% endfor %}
-  ],
-  "connections": {
-    {% for key, value in connections.items() %}
-    "{{ key }}": {
-      {% for conn_key, conn_value in value.items() %}
-      "{{ conn_key }}": [
-        [
-          {
-            "node": "{{ conn_value.node }}",
-            "type": "{{ conn_value.type }}",
-            "index": {{ conn_value.index }}
-          }
-        ]
-      ]{% if not loop.last %},{% endif %}
-      {% endfor %}
-    }{% if not loop.last %},{% endif %}
-    {% endfor %}
-  },
+  "nodes": {{ nodes | to_json }},
+  "connections": {{ connections | to_json }},
   "pinData": {}
 }
