@@ -1,0 +1,54 @@
+{
+  "name": "sub-data_processing",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "return items.map(item => {\n    // Check if the 'title' property exists before converting it to uppercase\n    if (item.json.title) {\n        item.json.processedTitle = item.json.title.toUpperCase();\n    } else {\n        // Handle the case where the 'title' property is undefined\n        item.json.processedTitle = 'N/A';\n    }\n    return item;\n});\n"
+      },
+      "name": "Process Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        600,
+        260
+      ],
+      "id": "51fbaa75-3dbf-4d30-97c1-55d1a39b3723"
+    },
+    {
+      "parameters": {},
+      "id": "a09f49db-89e5-4655-92fb-b5a60bec2e26",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        420,
+        260
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Process Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dc50f839-78d1-4839-9728-86e47381e32b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3a37553f87e194a4c56269d858f886da153ff88a9cfb1532532079f9c974d33e"
+  },
+  "id": "qOUJBpvzDtmphmuw",
+  "tags": []
+}

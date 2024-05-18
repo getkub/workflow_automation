@@ -1,0 +1,109 @@
+{
+  "name": "workflow_01",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowId": "mbtwqtw7do0HowaZ",
+        "options": {}
+      },
+      "name": "Execute HTTP Request Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        660,
+        340
+      ],
+      "id": "8920e6f7-cc64-4229-bbe4-12fe393e5f0e"
+    },
+    {
+      "parameters": {
+        "workflowId": "qOUJBpvzDtmphmuw",
+        "options": {}
+      },
+      "name": "Execute Data Processing Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        860,
+        340
+      ],
+      "id": "afcba9ed-70a2-43f9-b7da-15d4e052ac39"
+    },
+    {
+      "parameters": {
+        "workflowId": "4uUnXbmP3sAuMPy0",
+        "options": {}
+      },
+      "name": "Execute CRUD Actions Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        340
+      ],
+      "id": "b6d9b6a6-d652-4cf6-9774-fbba7c574662"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "start-main-workflow",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        460,
+        340
+      ],
+      "id": "2a35d1cb-3fa3-4869-95ac-ad562dbc490d"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute HTTP Request Workflow": {
+      "main": [
+        [
+          {
+            "node": "Execute Data Processing Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Data Processing Workflow": {
+      "main": [
+        [
+          {
+            "node": "Execute CRUD Actions Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Execute HTTP Request Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "83b3f565-da6b-4364-a638-a76ab75a93fd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3a37553f87e194a4c56269d858f886da153ff88a9cfb1532532079f9c974d33e"
+  },
+  "id": "rZpI6omWOYm5GiIJ",
+  "tags": []
+}
