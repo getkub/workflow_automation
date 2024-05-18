@@ -26,18 +26,14 @@
         combined_config: "{{ loaded_files.results | map(attribute='ansible_facts') | list | combine }}"
       when: loaded_files.results | length > 0
 
-    - name: Debug combined configuration
-      debug:
-        var: combined_config
-
     - name: Flatten lists in combined configuration
       set_fact:
         combined_config_flat: "{{ combined_config | combine({'modules_order': combined_config.modules_order | flatten}) }}"
       when: combined_config is defined
 
-    - name: Debug flattened combined configuration
-      debug:
-        var: combined_config_flat
+    # - name: Debug flattened combined configuration
+    #   debug:
+    #     var: combined_config_flat
 
     - name: Generate UUIDs for nodes
       set_fact:
@@ -45,6 +41,12 @@
       loop: "{{ combined_config_flat.modules_order }}"
       vars:
         uuid: "{{ lookup('pipe', 'python3 -c \"import uuid; print(uuid.uuid4())\"') }}"
+
+    - name: Add webhook node to start the workflow
+      set_fact:
+        nodes: "[{{ lookup('template', playbook_dir + '/templates/webhook.j2') | from_json }}]"
+      vars:
+        webhook_uuid: "{{ lookup('pipe', 'python3 -c \"import uuid; print(uuid.uuid4())\"') }}"
 
     - name: Generate nodes for main workflow template
       set_fact:
@@ -64,24 +66,9 @@
       loop_control:
         index_var: index
 
-    - name: Add webhook node to start the workflow
-      set_fact:
-        nodes: "{{ [{
-          'parameters': {
-            'httpMethod': 'POST',
-            'path': 'webhook',
-            'responseMode': 'onReceived',
-            'responseData': 'allEntries',
-            'options': {}
-          },
-          'name': 'Webhook',
-          'type': 'n8n-nodes-base.webhook',
-          'typeVersion': 1,
-          'position': [460, 240],
-          'id': webhook_uuid
-        }] + nodes }}"
-      vars:
-        webhook_uuid: "{{ lookup('pipe', 'python3 -c \"import uuid; print(uuid.uuid4())\"') }}"
+    # - name: Debug flattened combined configuration
+    #   debug:
+    #     var: nodes
 
     - name: Create connections between nodes
       set_fact:
