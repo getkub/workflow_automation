@@ -1,0 +1,15 @@
+{
+    "parameters": {
+      "httpMethod": "POST",
+      "path": "start-main-workflow",
+      "options": {}
+    },
+    "name": "Webhook",
+    "type": "n8n-nodes-base.webhook",
+    "typeVersion": 1,
+    "position": [
+      460,
+      340
+    ],
+    "id": "2a35d1cb-3fa3-4869-95ac-ad562dbc490d"
+}

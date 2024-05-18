@@ -1,0 +1,50 @@
+---
+- name: Generate Workflow
+  hosts: localhost
+  vars:
+    wf_dir: "../workflows"
+    swf_dir: "../subworkflows"
+  tasks:
+    - name: Load order and common files
+      include_vars:
+        file: "{{ item }}"
+      with_items:
+        - "{{ wf_dir }}/{{ wf }}/order.yml"
+        - "{{ wf_dir }}/{{ wf }}/common.yml"
+        - "{{ wf_dir }}/{{ wf }}/env.{{ env }}.yml"
+      register: loaded_files
+
+    - name: Debug loaded files
+      debug:
+        var: loaded_files
+
+    - name: Combine configuration
+      set_fact:
+        combined_config: "{{ loaded_files.results | map(attribute='ansible_facts') | list | combine }}"
+
+    - name: Debug combined configuration
+      debug:
+        var: combined_config
+
+    # Flatten lists in combined configuration
+    - name: Flatten lists in combined configuration
+      set_fact:
+        combined_config_flat: "{{ combined_config | combine({'modules_order': combined_config.modules_order | flatten}) }}"
+
+    - name: Debug flattened combined configuration
+      debug:
+        var: combined_config_flat
+
+    # Iterate over the modules_order list and load submodule configurations
+    - name: Combine submodules
+      set_fact:
+        combined_submodules: "{{ combined_submodules | default({}) | combine({item: submodule}) }}"
+      loop: "{{ combined_config_flat.modules_order }}"
+      vars:
+        submodule: "{{ lookup('file', '../' + item + '/main.json') }}"
+    
+    - name: Debug combined submodules
+      debug:
+        var: combined_submodules
+
+    # Continue with the rest of your playbook to generate the main workflow template using the combined submodules...
