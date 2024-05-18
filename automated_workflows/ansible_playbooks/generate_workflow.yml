@@ -1,8 +1,6 @@
 - name: Generate Workflow
   hosts: localhost
   vars:
-    wf: "wf00"  # Set the value of wf variable
-    env: "dev"  # Set the value of env variable
     wf_dir: "../workflows"
     swf_dir: "../subworkflows"
     dest_dir: "/tmp/{{ wf }}"
