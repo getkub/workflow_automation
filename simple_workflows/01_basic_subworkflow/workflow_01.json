@@ -1,9 +1,13 @@
 {
-  "name": "workflow_01",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3a37553f87e194a4c56269d858f886da153ff88a9cfb1532532079f9c974d33e"
+  },
   "nodes": [
     {
       "parameters": {
-        "workflowId": "mbtwqtw7do0HowaZ",
+        "source": "localFile",
+        "workflowPath": "/tmp/01_basic_subworkflow/sub_http_request.json",
         "options": {}
       },
       "name": "Execute HTTP Request Workflow",
@@ -17,7 +21,8 @@
     },
     {
       "parameters": {
-        "workflowId": "qOUJBpvzDtmphmuw",
+        "source": "localFile",
+        "workflowPath": "/tmp/01_basic_subworkflow/sub_data_processing.json",
         "options": {}
       },
       "name": "Execute Data Processing Workflow",
@@ -31,7 +36,8 @@
     },
     {
       "parameters": {
-        "workflowId": "4uUnXbmP3sAuMPy0",
+        "source": "localFile",
+        "workflowPath": "/tmp/01_basic_subworkflow/sub_crud_actions.json",
         "options": {}
       },
       "name": "Execute CRUD Actions Workflow",
@@ -59,7 +65,6 @@
       "id": "2a35d1cb-3fa3-4869-95ac-ad562dbc490d"
     }
   ],
-  "pinData": {},
   "connections": {
     "Execute HTTP Request Workflow": {
       "main": [
@@ -95,15 +100,5 @@
       ]
     }
   },
-  "active": true,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "83b3f565-da6b-4364-a638-a76ab75a93fd",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "3a37553f87e194a4c56269d858f886da153ff88a9cfb1532532079f9c974d33e"
-  },
-  "id": "rZpI6omWOYm5GiIJ",
-  "tags": []
+  "pinData": {}
 }
