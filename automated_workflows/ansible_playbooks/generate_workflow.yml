@@ -56,7 +56,7 @@
             'workflowPath': dest_dir + '/' + item + '/main.json',
             'options': {}
           },
-          'name': 'Execute ' + item + ' Workflow',
+          'name': item,
           'type': 'n8n-nodes-base.executeWorkflow',
           'typeVersion': 1,
           'position': [660 + (index * 200), 340],
