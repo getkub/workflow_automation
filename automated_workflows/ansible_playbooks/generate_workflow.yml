@@ -88,16 +88,16 @@
         connections: >-
           {{
             connections | default({}) | combine({
-              (nodes[index-1]['id']): {
+              (nodes[index]['name']): {
                 'main': [[{
-                  'node': nodes[index]['id'],
+                  'node': nodes[index + 1]['name'],
                   'type': 'main',
                   'index': 0
                 }]]
               }
             })
           }}
-      loop: "{{ range(1, nodes | length) }}"
+      loop: "{{ range(0, nodes | length - 1) }}"
       loop_control:
         index_var: index
 
