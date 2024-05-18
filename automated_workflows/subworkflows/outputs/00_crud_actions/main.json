@@ -1,0 +1,81 @@
+{
+  "name": "sub-crud_actions",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "726667fc-95b8-4dcb-b989-4b650c02ad8b",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/tmp/n8n-crud_output.json",
+        "options": {}
+      },
+      "id": "2345df51-cd06-43f2-8f91-acbd5d0e586d",
+      "name": "Read/Write Files from Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        760,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "id": "d5165e82-72de-4f7b-9c15-dfe47ac96f1b",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "94a2be2c-e068-4938-b6ba-e45914a495b1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3a37553f87e194a4c56269d858f886da153ff88a9cfb1532532079f9c974d33e"
+  },
+  "id": "4uUnXbmP3sAuMPy0",
+  "tags": []
+}

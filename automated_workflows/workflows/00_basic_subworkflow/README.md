@@ -1,3 +1,5 @@
-## Custom Module for adding tag
+## Basic Workflow
 
-- Follow same structure as modules
+- Connects simple three sub-workflows
+- Outputs to a file
+

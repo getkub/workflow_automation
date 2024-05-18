@@ -1,0 +1,55 @@
+{
+    "name": "sub-http_request",
+    "nodes": [
+      {
+        "parameters": {
+          "url": "https://jsonplaceholder.typicode.com/posts",
+          "options": {}
+        },
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 2,
+        "position": [
+          900,
+          660
+        ],
+        "id": "b5af06b0-ec19-4612-a390-a9045c3df874"
+      },
+      {
+        "parameters": {},
+        "id": "36411a8a-67bf-4129-8fe7-9f59a06e5dfc",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          700,
+          660
+        ]
+      }
+    ],
+    "pinData": {},
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "active": false,
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "versionId": "b31dd1dc-5635-4fb8-8725-1aff4e685288",
+    "meta": {
+      "templateCredsSetupCompleted": true,
+      "instanceId": "3a37553f87e194a4c56269d858f886da153ff88a9cfb1532532079f9c974d33e"
+    },
+    "id": "mbtwqtw7do0HowaZ",
+    "tags": []
+  }
