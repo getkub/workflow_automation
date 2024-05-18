@@ -115,7 +115,7 @@
     - name: Copy subworkflows directory
       ansible.builtin.copy:
         src: "{{ swf_dir }}"
-        dest: "{{ dest_dir }}/subworkflows"
+        dest: "{{ dest_dir }}"
         remote_src: yes
         force: yes
 
