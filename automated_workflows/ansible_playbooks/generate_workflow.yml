@@ -1,4 +1,3 @@
----
 - name: Generate Workflow
   hosts: localhost
   vars:
@@ -21,30 +20,64 @@
     - name: Combine configuration
       set_fact:
         combined_config: "{{ loaded_files.results | map(attribute='ansible_facts') | list | combine }}"
+      when: loaded_files.results | length > 0
 
     - name: Debug combined configuration
       debug:
         var: combined_config
 
-    # Flatten lists in combined configuration
     - name: Flatten lists in combined configuration
       set_fact:
         combined_config_flat: "{{ combined_config | combine({'modules_order': combined_config.modules_order | flatten}) }}"
+      when: combined_config is defined
 
     - name: Debug flattened combined configuration
       debug:
         var: combined_config_flat
 
-    # Iterate over the modules_order list and load submodule configurations
-    - name: Combine submodules
+    - name: Generate UUIDs for nodes
       set_fact:
-        combined_submodules: "{{ combined_submodules | default({}) | combine({item: submodule}) }}"
+        node_uuids: "{{ node_uuids | default([]) + [uuid] }}"
       loop: "{{ combined_config_flat.modules_order }}"
       vars:
-        submodule: "{{ lookup('file', '../' + item + '/main.json') }}"
-    
-    - name: Debug combined submodules
-      debug:
-        var: combined_submodules
+        uuid: "{{ lookup('pipe', 'python3 -c \"import uuid; print(uuid.uuid4())\"') }}"
 
-    # Continue with the rest of your playbook to generate the main workflow template using the combined submodules...
+    - name: Generate nodes for main workflow template
+      set_fact:
+        nodes: "{{ nodes | default([]) + [{
+          'parameters': {
+            'source': 'localFile',
+            'workflowPath': '/tmp/01_basic_subworkflow/' + item + '.json',
+            'options': {}
+          },
+          'name': 'Execute ' + item + ' Workflow',
+          'type': 'n8n-nodes-base.executeWorkflow',
+          'typeVersion': 1,
+          'position': [460 + (index * 200), 340],
+          'id': node_uuids[index]
+        }] }}"
+      loop: "{{ combined_config_flat.modules_order }}"
+      loop_control:
+        index_var: index
+
+    - name: Set up variables for main workflow template
+      set_fact:
+        meta: "{{ {'meta': combined_config_flat.get('meta', {})} }}"
+        connections: "{{ {'connections': combined_config_flat.get('connections', {})} }}"
+      when: combined_config_flat is defined
+
+    - name: Create destination directory
+      file:
+        path: "/tmp/{{ wf }}"
+        state: directory
+        mode: '0755'
+
+    - name: Generate main workflow template
+      template:
+        src: templates/workflow_template.j2
+        dest: "/tmp/{{ wf }}/main_workflow_{{ wf }}.json"
+      vars:
+        meta: "{{ meta }}"
+        nodes: "{{ nodes }}"
+        connections: "{{ connections }}"
+      when: combined_config_flat is defined
