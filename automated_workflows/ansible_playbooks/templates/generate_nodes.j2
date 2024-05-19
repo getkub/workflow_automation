@@ -1,14 +1,16 @@
+[
 {% for item in combined_config_flat.modules_order %}
 {
   "parameters": {
     "source": "localFile",
-    "workflowPath": "{{ item | join('/') }}/main.json",
+    "workflowPath": "{{dest_dir}}/{{ item }}/main.json",
     "options": {}
   },
-  "name": "Execute {{ item }} Workflow",
+  "name": "{{ item }}",
   "type": "n8n-nodes-base.executeWorkflow",
   "typeVersion": 1,
   "position": [{{ 660 + (loop.index0 * 200) }}, 340],
   "id": "{{ node_uuids[loop.index0] }}"
 }{% if not loop.last %},{% endif %}
 {% endfor %}
+]

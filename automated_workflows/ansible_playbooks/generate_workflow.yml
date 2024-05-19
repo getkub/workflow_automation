@@ -1,5 +1,6 @@
 - name: Generate Workflow
   hosts: localhost
+  gather_facts: no
   vars:
     wf_dir: "../workflows"
     swf_dir: "../subworkflows"
@@ -42,31 +43,20 @@
 
     - name: Add webhook node to start the workflow
       set_fact:
-        nodes: "[{{ lookup('template', playbook_dir + '/templates/webhook.j2') | from_json }}]"
+        nodes1: "[{{ lookup('template', playbook_dir + '/templates/webhook.j2') | from_json }}]"
       vars:
         webhook_uuid: "{{ lookup('pipe', 'python3 -c \"import uuid; print(uuid.uuid4())\"') }}"
 
     - name: Generate nodes for main workflow template
       set_fact:
-        nodes: "{{ nodes | default([]) + [{
-          'parameters': {
-            'source': 'localFile',
-            'workflowPath': dest_dir + '/' + item + '/main.json',
-            'options': {}
-          },
-          'name': item,
-          'type': 'n8n-nodes-base.executeWorkflow',
-          'typeVersion': 1,
-          'position': [660 + (index * 200), 340],
-          'id': node_uuids[index]
-        }] }}"
+        nodes2: "{{ lookup('template', playbook_dir + '/templates/generate_nodes.j2') }}"
       loop: "{{ combined_config_flat.modules_order }}"
       loop_control:
         index_var: index
 
-    # - name: Debug flattened combined configuration
-    #   debug:
-    #     var: nodes
+    - name: Combine nodes
+      set_fact:
+        nodes: "{{ nodes1 + nodes2 }}"
 
     - name: Create connections between nodes
       set_fact:
