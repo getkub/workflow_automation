@@ -5,6 +5,7 @@
     wf_dir: "../workflows"
     swf_dir: "../subworkflows"
     dest_dir: "/tmp/{{ wf }}"
+    base_dir: ".."
   tasks:
     - name: Load order and common files
       include_vars:
@@ -32,7 +33,9 @@
 
     # - name: Debug flattened combined configuration
     #   debug:
-    #     var: combined_config_flat
+    #     var: combined_config_flat.modules_order
+
+    # - meta: end_play
 
     - name: Generate UUIDs for nodes
       set_fact:
@@ -87,12 +90,19 @@
         state: directory
         mode: '0755'
 
+    - name: Create destination directory - subworkflows
+      file:
+        path: "{{ dest_dir }}/subworkflows"
+        state: directory
+        mode: '0755'
+
     - name: Copy subworkflows directory
-      ansible.builtin.copy:
-        src: "{{ swf_dir }}"
-        dest: "{{ dest_dir }}"
-        remote_src: yes
-        force: yes
+      synchronize:
+        src: "{{ base_dir }}/{{item}}"
+        dest: "{{ dest_dir }}/subworkflows"
+      loop: "{{ combined_config_flat.modules_order }}"
+
+## TODO: the structure has lost integrity from source. Need to find copy method to retain structure
 
     - name: Generate main workflow template
       template:

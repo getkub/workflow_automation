@@ -1,4 +1,4 @@
 modules_order: 
-  - subworkflows/inputs/http_requests
+  - subworkflows/common/inputs/http_requests
   - subworkflows/custom/wf00/data_processing
   - subworkflows/custom/wf00/crud_actions
