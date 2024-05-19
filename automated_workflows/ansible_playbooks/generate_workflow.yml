@@ -47,14 +47,14 @@
       vars:
         webhook_uuid: "{{ lookup('pipe', 'python3 -c \"import uuid; print(uuid.uuid4())\"') }}"
 
-    - name: Generate nodes for main workflow template
+    - name: Generate subworkflows nodes for main workflow template
       set_fact:
         nodes2: "{{ lookup('template', playbook_dir + '/templates/generate_nodes.j2') }}"
       loop: "{{ combined_config_flat.modules_order }}"
       loop_control:
         index_var: index
 
-    - name: Combine nodes
+    - name: Combine webhook node & subworkflows
       set_fact:
         nodes: "{{ nodes1 + nodes2 }}"
 
